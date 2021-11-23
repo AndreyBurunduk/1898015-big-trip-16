@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Андрей Косов](https://up.htmlacademy.ru/ecmascript/16/user/1898015).
-* Наставник: `Неизвестно`.
+* Наставник: [Дмитрий (sench) Железцов](https://htmlacademy.ru/profile/sench).
 
 ---
 
