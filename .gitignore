@@ -13,4 +13,4 @@ node_modules/
 
 # Собранные файлы (допишите самостоятельно)
 public/bundle.js
-public/bundel.js.map
+public/bundle.js.map
