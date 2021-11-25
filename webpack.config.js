@@ -7,7 +7,7 @@ module.exports = {
     path: path.resolve(__dirname, 'public'),
   },
   devtool: 'source-map',
-  devServeer: {
+  devServer: {
     hot: false
   }
 };
