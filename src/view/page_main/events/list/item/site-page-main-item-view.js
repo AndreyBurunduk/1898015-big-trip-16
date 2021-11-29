@@ -1,4 +1,4 @@
-export const createSiteTripTabs = () =>
+export const createSitePageMainTripEventsListItem = () =>
   //Switch trip view
   `
   <li class="trip-events__item">

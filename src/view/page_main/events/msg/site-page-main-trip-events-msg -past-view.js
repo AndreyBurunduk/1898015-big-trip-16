@@ -1,4 +1,4 @@
-export const createSitePageMainTripEventsMsgPast = () =>
+export const createSitePageMainEventsMsgPast = () =>
   //Switch trip view
   `
      <p class="trip-events__msg">There are no past events now</p>

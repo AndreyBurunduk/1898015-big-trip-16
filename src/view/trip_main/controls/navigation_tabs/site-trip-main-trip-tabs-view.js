@@ -1,4 +1,4 @@
-export const createSiteTripMainTripTabs = () =>
+export const createTripMainNavigationTabs = () =>
   //Switch trip view
   `
               <nav class="trip-controls__trip-tabs  trip-tabs">

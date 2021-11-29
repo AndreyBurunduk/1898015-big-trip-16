@@ -1,4 +1,4 @@
-export const createSitePageMainTripEventListTripEventItemEventEdit = () =>
+export const createSitePageMainTripEventsListEvent = () =>
   //Switch trip view
   `
 <form class="event event--edit" action="#" method="post">

@@ -1,4 +1,4 @@
-export const createSitePageMainTripEventsMsgFuture = () =>
+export const createSitePageMainEventsMsgFuture = () =>
   //Switch trip view
   `
      <p class="trip-events__msg">There are no future events now</p>

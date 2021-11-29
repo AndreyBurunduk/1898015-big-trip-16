@@ -1,4 +1,4 @@
-export const createSiteTripTabs = () =>
+export const createSitePageMainTripEventsListEventHeader = () =>
   //Switch trip view
   `
   <header class="event__header">
