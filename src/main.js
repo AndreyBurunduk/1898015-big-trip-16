@@ -53,7 +53,8 @@ const pageMainTripEvents = sitepageMain.querySelector('.trip-events');
 const statistics = false; //true false
 const MSG = 4;//1-4
 const open = 3;//1-9
-
+const pageMainTripEventsList;
+const pageMainEventEdit;
 //тут у нас 2 состояния statistics или events
 if (statistics) {
   //вставляем статистику койнтейнер
@@ -82,21 +83,19 @@ if (statistics) {
       //отрисовки блока предложение trip-events__list
       renderTemplate(pageMainTripEvents, createSitePageMainTripEventsList(), RenderPosition.BEFOREEND);
       //поиск блока trip-events__list для вывода данных trip-events__item
-      const pageMainTripEventsList = pageMainTripEvents.querySelector('.trip-events__list');
+      pageMainTripEventsList = pageMainTripEvents.querySelector('.trip-events__list');
       //генерация 9 данных по маршруту trip-events__item
       for(let i=0; i<9; i++){
         //условие отрисовки формы event
         if(i===open){
           renderTemplate(pageMainTripEventsList, createSitePageMainTripEventsListEvent(), RenderPosition.BEFOREEND);
-          const pageMainEventEdit = pageMainTripEventsList.querySelector('.event__details');
+          pageMainEventEdit = pageMainTripEventsList.querySelector('.event__details');
           renderTemplate(pageMainEventEdit, createSitePageMainTripEventsListEventOffers(), RenderPosition.AFTERBEGIN);
           renderTemplate(pageMainEventEdit, createSitePageMainTripEventsListEventDestination(), RenderPosition.BEFOREEND);
         }
         //стандартный ввывод данных trip-events__item
         renderTemplate(pageMainTripEventsList, createSitePageMainTripEventsListItem(), RenderPosition.BEFOREEND);
       }
-
-
       break;
   }
 }
