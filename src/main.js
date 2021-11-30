@@ -1,9 +1,31 @@
 import {renderTemplate, RenderPosition} from './render.js';
-
+//trip Main
 import {createTripMainTripInfo} from './view/trip_main/info/site-trip-main-trip-info-view.js';
 import {createTripMainNavigationTabs} from './view/trip_main/controls/navigation_tabs/site-trip-main-trip-tabs-view.js';
 import {createTripMainControlsTripFilters} from './view/trip_main/controls/trip-controls__filters/site-trip-main-controls-trip-filters-view.js';
 import {createTripMainControlsTripFiltersTabs} from './view/trip_main/controls/trip-controls__filters/tabs/site-trip-main-trip-filters-view.js';
+
+//page main
+import {createPageMainStatistics} from './view/page_main/statistics/site-page-main-statics-view';
+import {createPageMainStatisticsItem} from './view/page_main/statistics/item/site-page-main-statics-item-view.js';
+//msg
+import {createSitePageEventsMsgLoading} from './view/page_main/events/msg/site-page-main-trip-events-msg-loading-view.js';
+import {createSitePageMainEventsMsgPast} from './view/page_main/events/msg/site-page-main-trip-events-msg -past-view.js';
+import {createSitePageMainEventsMsgFuture} from './view/page_main/events/msg/site-page-main-trip-events-msg -future-view.js';
+//блок сортировки sort
+import {createSitePageMainEventsSort} from './view/page_main/events/sort/site-page-main-trip-events-trip-sort-view.js';
+//блок списка данных list
+import {createSitePageMainTripEventsList} from './view/page_main/events/list/site-page-main-trip-events-list-view';
+//блок списка item
+import {createSitePageMainTripEventsListItem} from './view/page_main/events/list/item/site-page-main-item-view.js';
+
+//блок с данными о маршруте trip-events__item
+import {createSitePageMainTripEventsListEvent} from './view/page_main/events/list/event/site-page-main-trip-events-list-event-view.js';
+//блок destination
+import {createSitePageMainTripEventsListEventDestination} from './view/page_main/events/list/event/details/destination/site-page-main-events-list-destination-view.js';
+//блок offers
+import {createSitePageMainTripEventsListEventOffers} from './view/page_main/events/list/event/details/offers/site-page-main-events-list-offers-view.js';
+
 
 //ишем контейнер для  создания шапки
 const siteTripMain = document.querySelector('.trip-main');
@@ -26,25 +48,6 @@ renderTemplate(tripMainTripControlsFilters, createTripMainControlsTripFilters(),
 const tripMainControlsTripFiltersTabs = tripMainTripControlsFilters.querySelector('.trip-filters');
 renderTemplate(tripMainControlsTripFiltersTabs, createTripMainControlsTripFiltersTabs(), RenderPosition.AFTERBEGIN);
 
-
-//page main
-import {createPageMainStatistics} from './view/page_main/statistics/site-page-main-statics-view';
-import {createPageMainStatisticsItem} from './view/page_main/statistics/item/site-page-main-statics-item-view.js';
-//msg
-import {createSitePageEventsMsgLoading} from './view/page_main/events/msg/site-page-main-trip-events-msg-loading-view.js';
-import {createSitePageMainEventsMsgPast} from './view/page_main/events/msg/site-page-main-trip-events-msg -past-view.js';
-import {createSitePageMainEventsMsgFuture} from './view/page_main/events/msg/site-page-main-trip-events-msg -future-view.js';
-
-
-import {createSitePageMainEventsSort} from './view/page_main/events/sort/site-page-main-trip-events-trip-sort-view.js';
-import {createSitePageMainTripEventsList} from './view/page_main/events/list/site-page-main-trip-events-list-view';
-import {createSitePageMainTripEventsListItem} from './view/page_main/events/list/item/site-page-main-item-view.js';
-
-//forma event
-import {createSitePageMainTripEventsListEvent} from './view/page_main/events/list/event/site-page-main-trip-events-list-event-view.js';
-import {createSitePageMainTripEventsListEventDestination} from './view/page_main/events/list/event/details/destination/site-page-main-events-list-destination-view.js';
-import {createSitePageMainTripEventsListEventOffers} from './view/page_main/events/list/event/details/offers/site-page-main-events-list-offers-view.js';
-
 //ищем контейнер page-Main
 const sitepageMain = document.querySelector('.page-main');
 const pageMainTripEvents = sitepageMain.querySelector('.trip-events');
@@ -53,8 +56,8 @@ const pageMainTripEvents = sitepageMain.querySelector('.trip-events');
 const statistics = false; //true false
 const MSG = 4;//1-4
 const open = 3;//1-9
-const pageMainTripEventsList;
-const pageMainEventEdit;
+let pageMainTripEventsList;
+let pageMainEventEdit;
 //тут у нас 2 состояния statistics или events
 if (statistics) {
   //вставляем статистику койнтейнер
