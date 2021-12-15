@@ -1,4 +1,4 @@
-export const createTripMainTripInfo = () =>
+export const createMainInfo = () =>
   //Switch trip view
   `
   <section class="trip-main__trip-info  trip-info">

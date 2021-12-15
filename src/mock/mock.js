@@ -1,43 +1,42 @@
-//функция генерирует случайные числа с указанием количество знаков после запятойс проверкой на вводимые значения
-const getRandomInt = (min, max, decimals=0) => {
-  if (min >= 0 && max > min) {
-    const num = Math.random() * (max - min + 1) + min;
-    return num.toFixed(decimals);
-  }
-  return 'Ввели не верный значения';
+import { getRandomInt, getRandomArr, getDestination, getData  } from './utils.js';
+import { baza, text, cities, offers } from './data.js';
+
+export const getEventItem= () => {
+  const arr = getRandomArr(baza);
+  return {
+    eventData: getData(),
+    eventType: arr['type'],
+    eventTypeIcon: arr['icon'],
+    eventTitle: getRandomArr(cities),
+    eventPrice: getRandomInt(20, 1000),
+    //получить рандомное значение+
+    eventOffers: offers.splice(getRandomInt(0,3), getRandomInt(0,2)),//массив доп значений цены+
+    eventDestination: getDestination(text),//список/массив рандомных строк будет зависемость от города+
+    eventPhotos: `http://picsum.photos/248/152?r=${getRandomInt(1,10)}`,//рандомное количество фото и не обезательное
+    eventFavorite: Boolean(getRandomInt(0,1)),//+
+  };
 };
 
-const randomNumber = () => {
-  const id = getRandomInt(1, 5);
-  if (id < 10) {
-    return `0${id}`;
-  } else {
-    `${id}`;
-  }
-};
-//функция возращает рандомный элемент из массива
-const getRandomElement = (elements) => {
-  const arr = Math.floor(Math.random() * elements.length);
-  return elements[arr];
-};
+/*тут перечилины все изменяемые теги
+trip-info__cost-value //общая сумма на все события
+trip-info__title //города маршрута
+trip-info__dates //дни поездки
 
-const ROUTES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant',];
-const CITIES = ['Geneva', 'Amsterdam', 'Chamonix', 'London'];
-const DESTINATION = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Cras aliquet varius magna, non porta ligula feugiat eget.', 'Fusce tristique felis at fermentum pharetra.', 'Aliquam id orci ut lectus varius viverra.', 'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.', 'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.', 'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.', 'Sed sed nisi sed augue convallis suscipit in sed felis.', 'Aliquam erat volutpat.', 'Nunc fermentum tortor ac porta dapibus.', 'In rutrum ac purus sit amet tempus.'];
+//тут пошел обект
+trip-events__item //будет название всех событий как то так
+event // 1 одно событие+
+event__date //дата события+
+event__type-icon //тип события+
+event__title //город события+
+event__start-time начало name = event-start-time конец name = event-end-time //время прохождения события+
+event__price-value event__input  event__input--price // общая сумма потраченая на 1 событие
+//тут будет массив
+event__offer-title //название на что потратили на 1 соббытие
+event__offer-price //сумма 1 затраты
+event__destination-description //описание места события
+event__photos-container // фото события
+//булевое значение
+event__favorite-icon //фаворит события+
 
-export const getTrip = () => ({
-  typeRoute: getRandomElement(ROUTES),
-  eventTitle: getRandomElement(CITIES),
-  timeStart: null,
-  timeFinish: null,
-  offers: {
-    addluggage: true,
-    comfortClass: true,
-    addMeal: true,
-    chooseSeats: true,
-    travelTrain: true,
-  },
-  destination: getRandomElement(DESTINATION),
-  foto:'',
-  favorite: true,
-});
+*/
+
