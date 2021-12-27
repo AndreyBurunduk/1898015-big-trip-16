@@ -27,7 +27,7 @@ const eventTypeIcon = ['transport', 'img/icons/transport.png'];
 
 const baza = [
   { id: '1', type: 'Taxi', icon: 'img/icons/taxi.png' },
-  { id: '2', type: 'bus', icon: 'img/icons/Bus.png' },
+  { id: '2', type: 'bus', icon: 'img/icons/bus.png' },
   { id: '3', type: 'Train', icon: 'img/icons/train.png' },
   { id: '4', type: 'Ship', icon: 'img/icons/ship.png' },
   { id: '5', type: 'Drive', icon: 'img/icons/drive.png' },
