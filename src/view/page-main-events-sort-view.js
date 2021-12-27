@@ -1,4 +1,4 @@
-export const createSitePageMainEventsSort = () =>
+export const createPageMainSort = () =>
   //Switch trip view
   `
           <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
