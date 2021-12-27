@@ -1,5 +1,4 @@
-import dayjs from 'dayjs';
-import {renderTemplate, RenderPosition} from '../render.js';
+import {getDateDuration, dayMonth, dataStart, dataEnd} from '../mock/formtime.js';
 
 export const createMainEventsList = () =>
   //Switch trip view
@@ -10,66 +9,52 @@ export const createMainEventsList = () =>
 
     </ul>
 `;
-//import {createSitePageMainTripEventsListItemOffer} from './offers/site-page-main-item-offer-view.js';
-//import {renderTemplate, RenderPosition} from './ /render.js';
 
-const formData = (data) =>{
-  const startDataDM = dayjs(data.startData).format('D MMM');
-  const startDataHM = dayjs(data.startData).format('h:m');
-  const finishDataHM = dayjs(data.endData).format('h:m');
-  const razDataHM = dayjs(data.startData).diff(dayjs(data.endData), 'ms');
-  const r = dayjs(razDataHM).format('h:m');//провериь разницу во времение хз бред пишет
-  const startDataDMYHM = dayjs(data.startData).format('DD/MM/YY h:m');
-  const finishDataDMYHM = dayjs(data.startData).format('DD/MM/YY h:m');
-  return { startDataDM, startDataHM, finishDataHM, r, startDataDMYHM, finishDataDMYHM };
+const eventSelectedOffers = (offers) =>{
+  let result = '';
+  for (const offer of offers) {
+    result += `<li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`;
+  }
+
+  return result;
 };
 
-export const createMainListItem = (event) =>{
+
+export const createMainListItem = (eventArr) =>{
   const {
     eventType,
     eventTypeIcon,
     eventTitle,
     eventPrice,
-    eventData,
+    startData,
+    endData,
     eventFavorite,
     eventOffers,
-  } = event;
+  } = eventArr;
 
   const favorite = eventFavorite
     ? 'event__favorite-btn--active'
     : '';
-const createMainListOffer = (Offer) => `
-    <li class="event__offer">
-      <span class="event__offer-title">${Offer.type}</span>
-        &plus;&euro;&nbsp;
-      <span class="event__offer-price">${Offer.price}</span>
-    </li>
-  `;
-  const createListItemOffer =(Offers)=> {
-    if (Offers.length > 0) {
-      for (const iterator of eventOffers) {
-        renderTemplate(iterator, createMainListOffer(Offers), RenderPosition.BEFOREEND);
-      }
-    }
-    return ' ';
-  };
-
 
   return `
   <li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="2019-03-18">${formData(eventData).startDataDM}</time>
+      <time class="event__date" datetime="2019-03-18">${dayMonth(startData)}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="${eventTypeIcon}" alt="Event type icon">
       </div>
       <h3 class="event__title">${eventType} ${eventTitle}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T12:25">${formData(eventData).startDataHM}</time>
+          <time class="event__start-time" datetime="2019-03-18T12:25">${dataStart(startData)}</time>
           &mdash;
-          <time class="event__end-time" datetime="2019-03-18T13:35">${formData(eventData).finishDataHM}</time>
+          <time class="event__end-time" datetime="2019-03-18T13:35">${dataEnd(endData)}</time>
         </p>
-        <p class="event__duration">${formData(eventData).r}</p>
+        <p class="event__duration">${getDateDuration(startData, endData)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${eventPrice}</span>
@@ -77,7 +62,7 @@ const createMainListOffer = (Offer) => `
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
         <!--сюда генерировать доп затраты-->
-        ${createListItemOffer(eventOffers)}
+      ${eventSelectedOffers(eventOffers)}
       </ul>
       <button class="event__favorite-btn ${favorite}" type="button">
         <span class="visually-hidden">Add to favorite</span>
@@ -93,3 +78,4 @@ const createMainListOffer = (Offer) => `
 
   `;
 };
+

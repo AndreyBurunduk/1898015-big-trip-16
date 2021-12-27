@@ -1,19 +1,22 @@
-import { getRandomInt, getRandomArr, getDestination, getData  } from './utils.js';
-import { baza, text, cities, offers } from './data.js';
+import { getRandomInt, getRandomArr, getDestination, gentDataStart, getDataEnd  } from './utils.js';
+import { baza, text, cities, offers } from './const.js';
 
 export const getEventItem= () => {
   const arr = getRandomArr(baza);
+  const start = gentDataStart();
+  const end = getDataEnd(start);
   return {
-    eventData: getData(),
+    startData: start,
+    endData: end,
     eventType: arr['type'],
     eventTypeIcon: arr['icon'],
     eventTitle: getRandomArr(cities),
     eventPrice: getRandomInt(20, 1000),
     //получить рандомное значение+
-    eventOffers: offers.splice(getRandomInt(0,3), getRandomInt(0,2)),//массив доп значений цены+
-    eventDestination: getDestination(text),//список/массив рандомных строк будет зависемость от города+
-    eventPhotos: `http://picsum.photos/248/152?r=${getRandomInt(1,10)}`,//рандомное количество фото и не обезательное
-    eventFavorite: Boolean(getRandomInt(0,1)),//+
+    eventOffers: offers.splice(getRandomInt(0, 3), getRandomInt(0, 2)), //массив доп значений цены+
+    eventDestination: getDestination(text), //список/массив рандомных строк будет зависемость от города+
+    eventPhotos: `http://picsum.photos/248/152?r=${getRandomInt(1, 10)}`, //рандомное количество фото и не обезательное
+    eventFavorite: Boolean(getRandomInt(0, 1)), //+
   };
 };
 

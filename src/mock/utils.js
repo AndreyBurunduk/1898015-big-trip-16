@@ -7,16 +7,8 @@ export const getRandomInt = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 //функция генерации даты
-export const getData = () => {
-  const start = getRandomInt(10, 43200);
-  const finish = getRandomInt(10, 360);
-  const startDate = dayjs().add(start, 'minute').toDate();
-  const endData = dayjs().add(finish + start, 'minute').toDate();
-  return {
-    startData: startDate,
-    endData: endData,
-  };
-};
+export const gentDataStart = () => dayjs().add(getRandomInt(1, 150), 'minute').toDate();
+export const getDataEnd = (data) => dayjs(data).add(getRandomInt(3, 72), 'hours').toDate();
 
 //генерация из массива
 export const getRandomArr = (arr) => {
@@ -32,4 +24,3 @@ export const getDestination = (arr) => {
   }
   return destination.join(' ');
 };
-

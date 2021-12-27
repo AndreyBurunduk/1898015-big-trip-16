@@ -1,29 +1,82 @@
 import dayjs from 'dayjs';
+import {dataFrom} from '../mock/formtime.js';
 
-export const createMainEventsListEdit = (element={}) => {
-  const {
-    eventData = null,
-    eventDestination = ' ',
-    eventFavorite = true,
-    eventOffers = new Array(),
-    eventPhotos = 'http://picsum.photos/248/152?r=1',
-    eventPrice = 0,
-    eventTitle = 'Amsterdam',
-    eventType = 'Taxi',
-    eventTypeIcon = 'img/icons/taxi.png',
-  } = element;
-  return `
-    <form class="event event--edit" action="#" method="post">
-      <header class="event__header">
-        <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-1">
-            <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="${eventTypeIcon}" alt="Event type icon">
-          </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+const createMainEventsListOffers = (offersArr) =>{
+  if (offersArr.length>0) {
+    return `
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          <div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
+            <label class="event__offer-label" for="event-offer-luggage-1">
+              <span class="event__offer-title">Add luggage</span>
+                +€&nbsp;
+              <span class="event__offer-price">30</span>
+            </label>
+          </div>
 
-          <div class="event__type-list">
-            <fieldset class="event__type-group">
+          <div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked="">
+            <label class="event__offer-label" for="event-offer-comfort-1">
+              <span class="event__offer-title">Switch to comfort class</span>
+                +€&nbsp;
+              <span class="event__offer-price">100</span>
+            </label>
+          </div>
+
+          <div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
+            <label class="event__offer-label" for="event-offer-meal-1">
+              <span class="event__offer-title">Add meal</span>
+                +€&nbsp;
+              <span class="event__offer-price">15</span>
+            </label>
+          </div>
+
+          <div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
+            <label class="event__offer-label" for="event-offer-seats-1">
+              <span class="event__offer-title">Choose seats</span>
+                +€&nbsp;
+              <span class="event__offer-price">5</span>
+            </label>
+          </div>
+
+          <div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
+            <label class="event__offer-label" for="event-offer-train-1">
+              <span class="event__offer-title">Travel by train</span>
+                +€&nbsp;
+              <span class="event__offer-price">40</span>
+            </label>
+          </div>
+        </div>
+      </section>`;
+  } else {
+    return '<!-- net-->';
+  }
+  //Switch trip view
+};
+
+const createMainEventsListDestination = (eventDestination, eventPhotos) =>
+  `
+  <section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${eventDestination}</p>
+
+    <div class="event__photos-container">
+        <div class="event__photos-tape">
+          <img class="event__photo" src="${eventPhotos}" alt="Event photo">
+        </div>
+    </div>
+
+  </section>
+
+`;
+
+const createMainTypeListGroup = () =>
+  `<fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
 
               <div class="event__type-item">
@@ -71,6 +124,41 @@ export const createMainEventsListEdit = (element={}) => {
                   <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
                </div>
             </fieldset>
+  `;
+const createMainFieldGroupDestination = () =>
+  `
+ <datalist id="destination-list-1">
+                      <option value="Amsterdam"></option>
+                      <option value="Geneva"></option>
+                      <option value="Chamonix"></option>
+                    </datalist>
+   `;
+
+export const createMainEventsListEdit = (eventArr = {}) => {
+  const {
+    eventType = 'Taxi',
+    eventTypeIcon = 'img/icons/taxi.png',
+    eventTitle = ' ',
+    eventPrice = '0',
+    startData = dayjs(),
+    endData = dayjs(),
+    eventOffers = [],
+    eventDestination = null,
+    eventPhotos = ' ',
+  } = eventArr;
+  return `
+    <form class="event event--edit" action="#" method="post">
+      <header class="event__header">
+        <div class="event__type-wrapper">
+          <label class="event__type  event__type-btn" for="event-type-toggle-1">
+            <span class="visually-hidden">Choose event type</span>
+            <img class="event__type-icon" width="17" height="17" src="${eventTypeIcon}" alt="Event type icon">
+          </label>
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+
+          <div class="event__type-list">
+            <!-- -->
+            ${createMainTypeListGroup()}
           </div>
         </div>
 
@@ -79,20 +167,22 @@ export const createMainEventsListEdit = (element={}) => {
             ${eventType}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventTitle}" list="destination-list-1">
-                    <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
-                    </datalist>
-                  </div>
+          <!-- -->
+          ${createMainFieldGroupDestination()}
 
-                  <div class="event__field-group  event__field-group--time">
-                    <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
-                    &mdash;
-                    <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
-                  </div>
+        </div>
+
+          <div class="event__field-group  event__field-group--time">
+            <label class="visually-hidden" for="event-start-time-1">From</label>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dataFrom(
+    startData
+  )}">
+              &mdash;
+            <label class="visually-hidden" for="event-end-time-1">To</label>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dataFrom(
+    endData
+  )}">
+          </div>
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
@@ -110,8 +200,9 @@ export const createMainEventsListEdit = (element={}) => {
                 </header>
     <section class="event__details">
 
-    <!--2 поля на выбор offer destination-->
-
+    <!--2 поля на выбор offer или destination-->
+      ${createMainEventsListOffers(eventOffers)}
+      ${createMainEventsListDestination(eventDestination, eventPhotos)}
     </section>
 
   </form>
@@ -119,78 +210,3 @@ export const createMainEventsListEdit = (element={}) => {
 `;
 };
 
-export const createMainEventsListOffers = () =>
-  //Switch trip view
-  `
-<section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-                    <div class="event__available-offers">
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
-                        <label class="event__offer-label" for="event-offer-luggage-1">
-                          <span class="event__offer-title">Add luggage</span>
-                          +€&nbsp;
-                          <span class="event__offer-price">30</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked="">
-                        <label class="event__offer-label" for="event-offer-comfort-1">
-                          <span class="event__offer-title">Switch to comfort class</span>
-                          +€&nbsp;
-                          <span class="event__offer-price">100</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                        <label class="event__offer-label" for="event-offer-meal-1">
-                          <span class="event__offer-title">Add meal</span>
-                          +€&nbsp;
-                          <span class="event__offer-price">15</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                        <label class="event__offer-label" for="event-offer-seats-1">
-                          <span class="event__offer-title">Choose seats</span>
-                          +€&nbsp;
-                          <span class="event__offer-price">5</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                        <label class="event__offer-label" for="event-offer-train-1">
-                          <span class="event__offer-title">Travel by train</span>
-                          +€&nbsp;
-                          <span class="event__offer-price">40</span>
-                        </label>
-                      </div>
-                    </div>
-                  </section>
-
-`;
-
-export const createMainEventsListDestination = () =>
-  `
-  <section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
-
-    <div class="event__photos-container">
-        <div class="event__photos-tape">
-          <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-          <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
-        </div>
-    </div>
-
-  </section>
-
-`;
