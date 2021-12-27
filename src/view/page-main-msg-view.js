@@ -10,9 +10,9 @@ export const createSitePageMainEventsMsgEverthing = () =>
           -->
   `;
 
-  export const createSitePageMainEventsMsgFuture = () =>
-    //Switch trip view
-    `
+export const createSitePageMainEventsMsgFuture = () =>
+//Switch trip view
+  `
      <p class="trip-events__msg">There are no future events now</p>
              <!--
             Значение отображаемого текста зависит от выбранного фильтра:
