@@ -14,7 +14,7 @@ const eventSelectedOffers = (offers) =>{
   let result = '';
   for (const offer of offers) {
     result += `<li class="event__offer">
-      <span class="event__offer-title">${offer.title}</span>
+      <span class="event__offer-title">${offer.type}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </li>`;
