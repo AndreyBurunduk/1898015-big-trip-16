@@ -1,212 +1,137 @@
-import dayjs from 'dayjs';
-import {dataFrom} from '../mock/formtime.js';
 
-const createMainEventsListOffers = (offersArr) =>{
-  if (offersArr.length>0) {
-    return `
-      <section class="event__section  event__section--offers">
-        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+import { CITIES, TYPES } from '../mock/const.js';
+import AbstractView from './abstract-view.js';
+import {dataDMY} from '../mock/data.js';
+
+const createMainEventsListEdit = ({basePrice, dateFrom, dateTo, destination, offers, type}, isEventNew) => {
+
+  const checkEventType = (eventType) => type === eventType ? 'checked' : '';
+
+  const getEventsList = () => TYPES.map((tripEvent) =>
+    `<div class="event__type-item">
+      <input id="event-type-${tripEvent}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${tripEvent}" ${checkEventType(tripEvent)}>
+      <label class="event__type-label  event__type-label--${tripEvent}" for="event-type-${tripEvent}-1">${tripEvent}</label>
+    </div>`).join('');
+
+  const getDestinationList = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
+
+  const getEditorCloseButtons = () => isEventNew ?
+    '<button class="event__reset-btn" type="reset">Close</button>' :
+    `<button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`;
+
+  const getOffersList = () =>
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
-            <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
-                +€&nbsp;
-              <span class="event__offer-price">30</span>
+          ${offers.offers.map(({id, title, price}) => `<div class="event__offer-selector">
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" checked>
+            <label class="event__offer-label" for="event-offer-${id}">
+              <span class="event__offer-title">${title}</span>
+              &plus;&euro;&nbsp;
+              <span class="event__offer-price">${price}</span>
             </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked="">
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort class</span>
-                +€&nbsp;
-              <span class="event__offer-price">100</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
-                +€&nbsp;
-              <span class="event__offer-price">15</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
-                +€&nbsp;
-              <span class="event__offer-price">5</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
-                +€&nbsp;
-              <span class="event__offer-price">40</span>
-            </label>
-          </div>
+          </div>`).join('')}
         </div>
-      </section>`;
-  } else {
-    return '<!-- net-->';
-  }
-  //Switch trip view
-};
+    </section>`;
 
-const createMainEventsListDestination = (eventDestination, eventPhotos) =>
-  `
-  <section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${eventDestination}</p>
+  const getDestinationPictures = () =>
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${destination.pictures.map(({src, description}) =>`<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+      </div>
+    </div>`;
 
-    <div class="event__photos-container">
-        <div class="event__photos-tape">
-          <img class="event__photo" src="${eventPhotos}" alt="Event photo">
-        </div>
-    </div>
+  const getDestinationDescription = () =>
+    `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${destination.description}</p>
+      ${destination.pictures.length > 0 ? getDestinationPictures() : ''}
+    </section>`;
 
-  </section>
-
-`;
-
-const createMainTypeListGroup = () =>
-  `<fieldset class="event__type-group">
-              <legend class="visually-hidden">Event type</legend>
-
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                  <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                </div>
-
-                <div class="event__type-item">
-                  <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                  <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-               </div>
-            </fieldset>
-  `;
-const createMainFieldGroupDestination = () =>
-  `
- <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
-                    </datalist>
-   `;
-
-export const createMainEventsListEdit = (eventArr = {}) => {
-  const {
-    eventType = 'Taxi',
-    eventTypeIcon = 'img/icons/taxi.png',
-    eventTitle = ' ',
-    eventPrice = '0',
-    startData = dayjs(),
-    endData = dayjs(),
-    eventOffers = [],
-    eventDestination = null,
-    eventPhotos = ' ',
-  } = eventArr;
-  return `
+  return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="${eventTypeIcon}" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
           <div class="event__type-list">
-            <!-- -->
-            ${createMainTypeListGroup()}
+            <fieldset class="event__type-group">
+              <legend class="visually-hidden">Event type</legend>
+                ${getEventsList()}
+            </fieldset>
           </div>
         </div>
-
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${eventType}
+            ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${eventTitle}" list="destination-list-1">
-          <!-- -->
-          ${createMainFieldGroupDestination()}
-
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+          <datalist id="destination-list-1">
+            ${getDestinationList()}
+          </datalist>
         </div>
-
-          <div class="event__field-group  event__field-group--time">
-            <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dataFrom(
-    startData
-  )}">
-              &mdash;
-            <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dataFrom(
-    endData
-  )}">
-          </div>
-
-                  <div class="event__field-group  event__field-group--price">
-                    <label class="event__label" for="event-price-1">
-                      <span class="visually-hidden">Price</span>
-                      &euro;
-                    </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${eventPrice}">
-                  </div>
-
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Delete</button>
-                  <button class="event__rollup-btn" type="button">
-                    <span class="visually-hidden">Open event</span>
-                  </button>
-                </header>
-    <section class="event__details">
-
-    <!--2 поля на выбор offer или destination-->
-      ${createMainEventsListOffers(eventOffers)}
-      ${createMainEventsListDestination(eventDestination, eventPhotos)}
-    </section>
-
-  </form>
-
-`;
+        <div class="event__field-group  event__field-group--time">
+          <label class="visually-hidden" for="event-start-time-1">From</label>
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dataDMY(dateFrom)}">
+          &mdash;
+          <label class="visually-hidden" for="event-end-time-1">To</label>
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dataDMY(dateTo)}">
+        </div>
+        <div class="event__field-group  event__field-group--price">
+          <label class="event__label" for="event-price-1">
+            <span class="visually-hidden">Price</span>
+            &euro;
+          </label>
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        </div>
+        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        ${getEditorCloseButtons()}
+      </header>
+      <section class="event__details">
+        ${offers.offers.length > 0 ? getOffersList() : ''}
+        ${destination.description.length > 0 ? getDestinationDescription() : ''}
+      </section>
+    </form>
+  </li>`;
 };
 
+export default class TripEventEditorView extends AbstractView {
+  #tripEvent = {};
+  #isEventNew = null;
+
+  constructor(tripEvent = {}, isEventNew = false) {
+    super();
+    this.#tripEvent = tripEvent;
+    this.#isEventNew = isEventNew;
+  }
+
+  get template() {
+    return createMainEventsListEdit(this.#tripEvent, this.#isEventNew);
+  }
+
+  #collapseClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.collapseClick();
+  }
+
+  setCollapseClickHandler = (callback) => {
+    this._callback.collapseClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#collapseClickHandler);
+  }
+
+  #submitFormHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.submitForm();
+  }
+
+  setSubmitFormHandler = (callback) => {
+    this._callback.submitForm = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#submitFormHandler);
+  }
+}

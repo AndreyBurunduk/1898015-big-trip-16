@@ -1,45 +1,61 @@
-import { getRandomInt, getRandomArr, getDestination, gentDataStart, getDataEnd  } from './utils.js';
-import { baza, text, cities, offers } from './const.js';
+import { DESCRIPTIONS_TEXT, TYPES, CITIES, OFFER_TITLES,} from './const.js';
+import {
+  getRandomInt,
+} from './utils.js';
+import dayjs from 'dayjs';
 
-export const getEventItem= () => {
-  const arr = getRandomArr(baza);
-  const start = gentDataStart();
-  const end = getDataEnd(start);
+const getDescription = () =>
+  DESCRIPTIONS_TEXT.sort(() => 0.5 - Math.random())
+    .slice(0, getRandomInt(0, 5 - 1) + 1)
+    .join(' ');
+
+const getTripCity = () => CITIES[getRandomInt(0, CITIES.length - 1)];
+
+const getTripEventType = () => TYPES[getRandomInt(0, TYPES.length - 1)];
+
+const getBasePrice = () => getRandomInt(0, 50);
+
+const getOfferPrice = () => getRandomInt(0, 10);
+
+const getOffersCount = () => getRandomInt(0, 5);
+
+const getPhotoCount = () => getRandomInt(0, 5 - 1) + 1;
+
+const getDate = () => dayjs().add(getRandomInt(-2880, 2880), 'minute');
+
+const getPhotos = () =>
+  Array.from({ length: getPhotoCount() }, (value, index) => ({
+    src: `http://picsum.photos/300/200?r=${getRandomInt(1, 100)}`,
+    description: `Random photo №${index + 1}`,
+  }));
+
+const getDestination = () => ({
+  description: getDescription(),
+  name: getTripCity(),
+  pictures: getPhotos(),
+});
+
+const getOffers = (type) => {
+  const offersCount = getOffersCount();
+  const offersTitles = OFFER_TITLES.sort(() => getRandomInt(-1, 1)).slice(0, offersCount);
+  const offers = Array.from({ length: offersCount }, (value, index) => ({
+    id: index, title: offersTitles[index], price: getOfferPrice(),}));
+  return { type, offers };
+};
+
+export const getEventItem = () => {
+  const type = getTripEventType();
+  const firstDate = getDate();
+  const secondDate = getDate();
   return {
-    startData: start,
-    endData: end,
-    eventType: arr['type'],
-    eventTypeIcon: arr['icon'],
-    eventTitle: getRandomArr(cities),
-    eventPrice: getRandomInt(20, 1000),
-    //получить рандомное значение+
-    eventOffers: offers.splice(getRandomInt(0, 3), getRandomInt(0, 2)), //массив доп значений цены+
-    eventDestination: getDestination(text), //список/массив рандомных строк будет зависемость от города+
-    eventPhotos: `http://picsum.photos/248/152?r=${getRandomInt(1, 10)}`, //рандомное количество фото и не обезательное
-    eventFavorite: Boolean(getRandomInt(0, 1)), //+
+    basePrice: getBasePrice(),
+    dateFrom: dayjs(Math.min(firstDate, secondDate)).toDate(),
+    dateTo: dayjs(Math.max(firstDate, secondDate)).toDate(),
+    destination: getDestination(),
+    isFavorite: Boolean(getRandomInt()),
+    offers: getOffers(type),
+    type,
   };
 };
 
-/*тут перечилины все изменяемые теги
-trip-info__cost-value //общая сумма на все события
-trip-info__title //города маршрута
-trip-info__dates //дни поездки
-
-//тут пошел обект
-trip-events__item //будет название всех событий как то так
-event // 1 одно событие+
-event__date //дата события+
-event__type-icon //тип события+
-event__title //город события+
-event__start-time начало name = event-start-time конец name = event-end-time //время прохождения события+
-event__price-value event__input  event__input--price // общая сумма потраченая на 1 событие
-//тут будет массив
-event__offer-title //название на что потратили на 1 соббытие
-event__offer-price //сумма 1 затраты
-event__destination-description //описание места события
-event__photos-container // фото события
-//булевое значение
-event__favorite-icon //фаворит события+
-
-*/
 

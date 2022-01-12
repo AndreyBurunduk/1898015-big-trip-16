@@ -1,4 +1,6 @@
-export const createPageMainSort = () =>
+import AbstractView from './abstract-view.js';
+
+const createPageMainSort = () =>(
   //Switch trip view
   `
           <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -27,4 +29,10 @@ export const createPageMainSort = () =>
               <label class="trip-sort__btn" for="sort-offer">Offers</label>
             </div>
           </form>
-`;
+`);
+export default class TripSortView extends AbstractView {
+  get template() {
+    return createPageMainSort();
+  }
+}
+
