@@ -1,3 +1,5 @@
+import AbstractView from './abstract-view.js';
+
 export const createMainNavigationTabs = () =>
   //Switch trip view
   `
@@ -7,3 +9,8 @@ export const createMainNavigationTabs = () =>
     </nav>
   `;
 
+export default class TripTabsView extends AbstractView {
+  get template() {
+    return createMainNavigationTabs();
+  }
+}

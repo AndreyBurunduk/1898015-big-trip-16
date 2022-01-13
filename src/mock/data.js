@@ -17,7 +17,8 @@ export const getDateDuration = (startDate, endDate) => {
   }
 };
 
-export const dayMonth = (data) => dayjs(data).format('D MMM');
-export const dataStart = (data) => dayjs(data).format('HH:mm');
-export const dataEnd = (data) => dayjs(data).format('HH:mm');
-export const dataFrom = (data) => dayjs(data).format('DD/MM/YY HH:m');
+export const dayDM = (data) => dayjs(data).format('D MMM');
+export const dataYMD = (data) => dayjs(data).format('YYYY-MM-DD');
+export const dataHm = (data) => dayjs(data).format('HH:mm');
+export const dataDMY = (data) => dayjs(data).format('DD/MM/YY HH:m');
+export const dataYMDHm = (data) => dayjs(data).format('YYYY-MM-DD');
