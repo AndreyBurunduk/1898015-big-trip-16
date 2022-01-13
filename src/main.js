@@ -5,7 +5,7 @@ import TripTabsView from './view/trip-main-controls-view.js';
 import TripFiltersView from './view/trip-main-filters-view.js';
 import TripPresenter from './presenter/trip-presenter.js';
 //создаем массив данных
-const elements = 21;
+const elements = 10;
 const elementsArr = Array.from({ length: elements }, getEventItem);
 window.console.log(elementsArr);
 const tripMain = document.querySelector('.trip-main');
