@@ -22,3 +22,10 @@ export const dataYMD = (data) => dayjs(data).format('YYYY-MM-DD');
 export const dataHm = (data) => dayjs(data).format('HH:mm');
 export const dataDMY = (data) => dayjs(data).format('DD/MM/YY HH:m');
 export const dataYMDHm = (data) => dayjs(data).format('YYYY-MM-DD');
+
+export const sortTripEventsByDay = (tripEventA, tripEventB) => dayjs(tripEventA.dateFrom).diff(dayjs(tripEventB.dateFrom));
+
+export const sortTripEventsByTime = (tripEventA, tripEventB) =>
+  dayjs(tripEventA.dateFrom).diff(dayjs(tripEventA.dateTo)) - dayjs(tripEventB.dateFrom).diff(dayjs(tripEventB.dateTo));
+
+export const sortTripEventsByPrice = (tripEventA, tripEventB) => tripEventB.basePrice - tripEventA.basePrice;

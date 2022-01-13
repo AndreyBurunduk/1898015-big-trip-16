@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import { dayDM, dataYMD, dataYMDHm, dataHm, getDateDuration } from '../mock/data.js';
+import { dayDM, dataYMD, dataYMDHm, dataHm, getDateDuration } from '../utils/data.js';
 
 const createMainListItem = ({basePrice, dateFrom, dateTo, destination, isFavorite, offers, type}) => {
 
@@ -64,8 +64,18 @@ export default class TripEventView extends AbstractView {
     this._callback.expandClick();
   }
 
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
   setExpandClickHandler = (callback) => {
     this._callback.expandClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#expandClickHandler);
+  }
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 }

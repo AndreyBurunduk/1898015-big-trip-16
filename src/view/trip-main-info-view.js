@@ -13,19 +13,9 @@ const createMainInfo = (tripEvents) => {
     return totalPrice;
   };
 
-  const getSortedEventsFrom = () =>
-    tripEvents
-      .slice()
-      .sort(
-        (firstEvent, secondEvent) => firstEvent.dateFrom - secondEvent.dateFrom
-      );
+  const getSortedEventsFrom = () =>tripEvents.slice().sort((firstEvent, secondEvent) => firstEvent.dateFrom - secondEvent.dateFrom);
 
-  const getSortedEventsTo = () =>
-    tripEvents
-      .slice()
-      .sort(
-        (firstEvent, secondEvent) => firstEvent.dateTo - secondEvent.dateTo
-      );
+  const getSortedEventsTo = () =>tripEvents.slice().sort((firstEvent, secondEvent) => firstEvent.dateTo - secondEvent.dateTo);
 
   const getTripRouteString = (
     firstEventName,

@@ -1,7 +1,7 @@
 
-import { CITIES, TYPES } from '../mock/const.js';
+import { CITIES, TYPES } from '../utils/const.js';
 import AbstractView from './abstract-view.js';
-import {dataDMY} from '../mock/data.js';
+import {dataDMY} from '../utils/data.js';
 
 const createMainEventsListEdit = ({basePrice, dateFrom, dateTo, destination, offers, type}, isEventNew) => {
 
