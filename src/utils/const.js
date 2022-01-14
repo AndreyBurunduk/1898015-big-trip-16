@@ -34,3 +34,9 @@ export const OFFER_TITLES = [
   'Choose seats',
   'Choose the radio station',
 ];
+
+export const SortType = {
+  DAY: 'sort-day',
+  TIME: 'sort-time',
+  PRICE: 'sort-price',
+};

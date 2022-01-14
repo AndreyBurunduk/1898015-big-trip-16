@@ -33,4 +33,7 @@ export const getDestination = (arr) => {
   return destination.join(' ');
 };
 
-
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+  return (index === -1) ? items : [...items.slice(0, index), update, ...items.slice(index + 1)];
+};

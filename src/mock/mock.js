@@ -1,9 +1,9 @@
-import { DESCRIPTIONS_TEXT, TYPES, CITIES, OFFER_TITLES,} from './const.js';
+import { DESCRIPTIONS_TEXT, TYPES, CITIES, OFFER_TITLES,} from '../utils/const.js';
 import {
   getRandomInt,
-} from './utils.js';
+} from '../utils/utils.js';
 import dayjs from 'dayjs';
-
+import { nanoid } from 'nanoid';
 const getDescription = () =>
   DESCRIPTIONS_TEXT.sort(() => 0.5 - Math.random())
     .slice(0, getRandomInt(0, 5 - 1) + 1)
@@ -48,6 +48,7 @@ export const getEventItem = () => {
   const firstDate = getDate();
   const secondDate = getDate();
   return {
+    id: nanoid(),
     basePrice: getBasePrice(),
     dateFrom: dayjs(Math.min(firstDate, secondDate)).toDate(),
     dateTo: dayjs(Math.max(firstDate, secondDate)).toDate(),
