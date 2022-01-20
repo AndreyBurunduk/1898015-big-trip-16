@@ -1,23 +1,16 @@
-import { RenderPosition, render,} from './render.js';
-import { getEventItem } from './mock/mock.js';
-import TripInfoView from './view/trip-main-info-view.js';
-import TripTabsView from './view/trip-main-controls-view.js';
-import TripFiltersView from './view/trip-main-filters-view.js';
-import TripPresenter from './presenter/trip-presenter.js';
-//создаем массив данных
-const elements = 10;
-const elementsArr = Array.from({ length: elements }, getEventItem);
-window.console.log(elementsArr);
-const tripMain = document.querySelector('.trip-main');
-const tripControlsNavigation = document.querySelector('.trip-controls__navigation');
-const tripFilters = document.querySelector('.trip-controls__filters');
-const tripEvents = document.querySelector('.trip-events');
-const tripPresenter = new TripPresenter(tripEvents);
+import {getTripEvent} from './mock/mock.js';
+import TripEventsModel from './model/trip-model.js';
+import FilterModel from './model/filter-model.js';
+import AppPresenter from './presenter/app-presenter.js';
 
-render(tripControlsNavigation, new TripTabsView(), RenderPosition.BEFOREEND);
-render(tripFilters, new TripFiltersView(), RenderPosition.BEFOREEND);
+const TRIP_EVENTS_COUNTER = 20;
 
-if (elements > 0) {
-  render(tripMain, new TripInfoView(elementsArr), RenderPosition.AFTERBEGIN);
-}
-tripPresenter.init(elementsArr);
+const tripEvents = Array.from({length: TRIP_EVENTS_COUNTER}, getTripEvent);
+
+const tripEventsModel = new TripEventsModel();
+tripEventsModel.tripEvents = tripEvents;
+
+const filterModel = new FilterModel();
+
+const appPresenter = new AppPresenter(tripEventsModel, filterModel);
+appPresenter.init();

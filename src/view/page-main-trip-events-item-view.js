@@ -1,9 +1,20 @@
+import dayjs from 'dayjs';
+import he from 'he';
 import AbstractView from './abstract-view.js';
-import { dayDM, dataYMD, dataYMDHm, dataHm, getDateDuration } from '../utils/data.js';
 
-const createMainListItem = ({basePrice, dateFrom, dateTo, destination, isFavorite, offers, type}) => {
+const createTripEvent = ({basePrice, dateFrom, dateTo, destination, isFavorite, offers, type}) => {
+  const startTime = dayjs(dateFrom);
+  const endTime = dayjs(dateTo);
 
-  const getOfferNodes = () => offers.offers.map(({title, price}) =>
+  const getTimeDifference = () => {
+    const timeDifference = endTime.diff(startTime, 'minutes');
+    const minutesDifference = timeDifference % 60 > 0 ? `${timeDifference % 60}M` : '';
+    const hoursDifference = Math.floor(timeDifference / 60) % 24 > 0 ? `${Math.floor(timeDifference / 60) % 24}H ` : '';
+    const daysDifference = Math.floor((timeDifference / 60) / 24) > 0 ? `${Math.floor((timeDifference / 60) / 24)}D ` : '';
+    return daysDifference + hoursDifference + minutesDifference;
+  };
+
+  const getOffers = () => offers.map(({title, price}) =>
     `<li class="event__offer">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
@@ -14,26 +25,24 @@ const createMainListItem = ({basePrice, dateFrom, dateTo, destination, isFavorit
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${dataYMD(dateFrom)}">${dayDM(dateFrom)}</time>
+      <time class="event__date" datetime="${startTime.format('YYYY-MM-DD')}">${startTime.format('MMM DD')}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} ${destination.name}</h3>
+      <h3 class="event__title">${type} ${he.encode(destination.name)}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${dataYMDHm(dateFrom)}">${dataHm(dateFrom)}</time>
+          <time class="event__start-time" datetime="${startTime.format('YYYY-MM-DDTHH:mm')}">${startTime.format('HH:mm')}</time>
           &mdash;
-          <time class="event__end-time" datetime="${dataYMDHm(dateTo)}">${dataHm(dateTo)}</time>
+          <time class="event__end-time" datetime="${endTime.format('YYYY-MM-DDTHH:mm')}">${endTime.format('HH:mm')}</time>
         </p>
-        <p class="event__duration">${getDateDuration(dateFrom,dateTo)}</p>
+        <p class="event__duration">${getTimeDifference()}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-        ${offers.offers.length > 0 ? getOfferNodes() : ''}
-      </ul>
+      ${offers ? `<ul class="event__selected-offers">${getOffers()}</ul>` : ''}
       <button class="event__favorite-btn${getFavoriteClass()}" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -56,7 +65,7 @@ export default class TripEventView extends AbstractView {
   }
 
   get template() {
-    return createMainListItem(this.#tripEvent);
+    return createTripEvent(this.#tripEvent);
   }
 
   #expandClickHandler = (evt) => {
