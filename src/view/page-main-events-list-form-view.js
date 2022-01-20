@@ -1,19 +1,24 @@
+import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import he from 'he';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import {TRIP_CITIES, TripEventType, Offer} from '../utils/const.js';
+import {getDestination} from '../mock/get-destination.js';
+import SmartView from './smart-view.js';
 
-import { CITIES, TYPES } from '../utils/const.js';
-import AbstractView from './abstract-view.js';
-import {dataDMY} from '../utils/data.js';
-
-const createMainEventsListEdit = ({basePrice, dateFrom, dateTo, destination, offers, type}, isEventNew) => {
+const createTripEventEditor = ({basePrice, dateFrom, dateTo, destination = {}, offers = [], type} = {}, offersList, isEventNew) => {
+  const startTime = dayjs(dateFrom);
+  const endTime = dayjs(dateTo);
 
   const checkEventType = (eventType) => type === eventType ? 'checked' : '';
 
-  const getEventsList = () => TYPES.map((tripEvent) =>
+  const getEventsList = () => Object.values(TripEventType).map((tripEvent) =>
     `<div class="event__type-item">
       <input id="event-type-${tripEvent}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${tripEvent}" ${checkEventType(tripEvent)}>
       <label class="event__type-label  event__type-label--${tripEvent}" for="event-type-${tripEvent}-1">${tripEvent}</label>
     </div>`).join('');
 
-  const getDestinationList = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
+  const getDestinationList = () => TRIP_CITIES.map((city) => `<option value="${city}"></option>`).join('');
 
   const getEditorCloseButtons = () => isEventNew ?
     '<button class="event__reset-btn" type="reset">Close</button>' :
@@ -22,18 +27,24 @@ const createMainEventsListEdit = ({basePrice, dateFrom, dateTo, destination, off
       <span class="visually-hidden">Open event</span>
     </button>`;
 
+  const getOfferCheckedStatus = (id) => offers.some((offer) => offer.id === id) ? 'checked' : '';
+
+  const getOffers = () => `${offersList.find((offer) => offer.type === type).offers.map(({id, title, price}) =>
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" ${getOfferCheckedStatus(id)}>
+      <label class="event__offer-label" for="event-offer-${id}">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`)
+    .join('')}`;
+
   const getOffersList = () =>
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${offers.offers.map(({id, title, price}) => `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}" type="checkbox" name="event-offer-${id}" checked>
-            <label class="event__offer-label" for="event-offer-${id}">
-              <span class="event__offer-title">${title}</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${price}</span>
-            </label>
-          </div>`).join('')}
+          ${getOffers()}
         </div>
     </section>`;
 
@@ -71,48 +82,51 @@ const createMainEventsListEdit = ({basePrice, dateFrom, dateTo, destination, off
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name ? he.encode(destination.name) : ''}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${getDestinationList()}
           </datalist>
         </div>
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dataDMY(dateFrom)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom ? startTime.format('DD/MM/YY HH:mm') : ''}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dataDMY(dateTo)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo ? endTime.format('DD/MM/YY HH:mm') : ''}">
         </div>
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice ? basePrice : ''}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         ${getEditorCloseButtons()}
       </header>
       <section class="event__details">
-        ${offers.offers.length > 0 ? getOffersList() : ''}
-        ${destination.description.length > 0 ? getDestinationDescription() : ''}
+        ${getOffersList()}
+        ${destination.description ? getDestinationDescription() : ''}
       </section>
     </form>
   </li>`;
 };
 
-export default class TripEventEditorView extends AbstractView {
-  #tripEvent = {};
+export default class TripEventEditorView extends SmartView {
   #isEventNew = null;
+  #startDatePicker = null;
+  #endDatePicker = null;
 
   constructor(tripEvent = {}, isEventNew = false) {
     super();
-    this.#tripEvent = tripEvent;
+    this._data = tripEvent;
     this.#isEventNew = isEventNew;
+    this.#setInnerHandlers();
+    this.#setDatePickers();
   }
 
   get template() {
-    return createMainEventsListEdit(this.#tripEvent, this.#isEventNew);
+    return createTripEventEditor(this._data, Offer, this.#isEventNew);
   }
 
   #collapseClickHandler = (evt) => {
@@ -127,11 +141,88 @@ export default class TripEventEditorView extends AbstractView {
 
   #submitFormHandler = (evt) => {
     evt.preventDefault();
-    this._callback.submitForm();
+    this._callback.submitForm(this._data);
   }
 
   setSubmitFormHandler = (callback) => {
     this._callback.submitForm = callback;
     this.element.querySelector('form').addEventListener('submit', this.#submitFormHandler);
+  }
+
+  #deleteFormHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteForm(this._data);
+  }
+
+  setDeleteFormHandler = (callback) => {
+    this._callback.deleteForm = callback;
+    this.element.querySelector('form').addEventListener('reset', this.#deleteFormHandler);
+  }
+
+  #changeEventTypeHandler = (evt) => this.updateData({
+    type: evt.target.value,
+    offers: [],
+  });
+
+  #changeEventCityHandler = (evt) => {
+    const newDestination = getDestination(evt.target.value) || {name: evt.target.value};
+    this.updateData({destination: newDestination});
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeEventTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeEventCityHandler);
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setSubmitFormHandler(this._callback.submitForm);
+    this.setDeleteFormHandler(this._callback.deleteForm);
+    this.#setDatePickers();
+
+    if (!this.#isEventNew) {
+      this.setCollapseClickHandler(this._callback.collapseClick);
+    }
+  }
+
+  reset = (tripEvent) => this.updateData(tripEvent);
+
+  removeElement = () => {
+    super.removeElement();
+    this.#startDatePicker.destroy();
+    this.#startDatePicker = null;
+    this.#endDatePicker.destroy();
+    this.#endDatePicker = null;
+  }
+
+  #startDateChangeHandler = (newStartDate) => this.updateData({dateFrom: newStartDate}, true);
+
+  #endDateChangeHandler = (newEndDate) => this.updateData({dateTo: newEndDate}, true);
+
+  #setStartDatePicker = () => {
+    this.#startDatePicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        onChange: this.#startDateChangeHandler,
+      }
+    );
+  }
+
+  #setEndDatePicker = () => {
+    this.#endDatePicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        onChange: this.#endDateChangeHandler,
+      }
+    );
+  }
+
+  #setDatePickers = () => {
+    this.#setStartDatePicker();
+    this.#setEndDatePicker();
   }
 }

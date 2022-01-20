@@ -1,27 +1,16 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract-view.js';
 
-const createMainInfo = (tripEvents) => {
-  const getTotalPrice = () => {
-    let totalPrice = 0;
-    tripEvents.forEach((tripEvent) => {
-      totalPrice += tripEvent.basePrice;
-      tripEvent.offers.offers.forEach((offer) => {
-        totalPrice += offer.price;
-      });
-    });
-    return totalPrice;
-  };
+const createTripInfo = (tripEvents) => {
+  const getTotalPrice = () => tripEvents.reduce((totalPrice, tripEvent) =>
+    totalPrice + tripEvent.basePrice + tripEvent.offers.reduce((totalOffersPrice, offer) =>
+      totalOffersPrice + offer.price, 0), 0);
 
-  const getSortedEventsFrom = () =>tripEvents.slice().sort((firstEvent, secondEvent) => firstEvent.dateFrom - secondEvent.dateFrom);
+  const getSortedEventsFrom = () => tripEvents.slice().sort((firstEvent, secondEvent) => firstEvent.dateFrom - secondEvent.dateFrom);
 
-  const getSortedEventsTo = () =>tripEvents.slice().sort((firstEvent, secondEvent) => firstEvent.dateTo - secondEvent.dateTo);
+  const getSortedEventsTo = () => tripEvents.slice().sort((firstEvent, secondEvent) => firstEvent.dateTo - secondEvent.dateTo);
 
-  const getTripRouteString = (
-    firstEventName,
-    middleEventName,
-    lastEventName
-  ) => {
+  const getTripRouteString = (firstEventName, middleEventName, lastEventName) => {
     switch (tripEvents.length) {
       case 1:
         return firstEventName;
@@ -36,15 +25,9 @@ const createMainInfo = (tripEvents) => {
 
   const getTripRoute = () => {
     const firstTripEventName = getSortedEventsFrom()[0].destination.name;
-    const lastTripEventName =
-      getSortedEventsTo()[tripEvents.length - 1].destination.name;
-    const middleTripEventName =
-      getSortedEventsFrom()[Math.floor(tripEvents.length / 2)].destination.name;
-    return getTripRouteString(
-      firstTripEventName,
-      middleTripEventName,
-      lastTripEventName
-    );
+    const lastTripEventName = getSortedEventsTo()[tripEvents.length - 1].destination.name;
+    const middleTripEventName = getSortedEventsFrom()[Math.floor(tripEvents.length / 2)].destination.name;
+    return getTripRouteString(firstTripEventName, middleTripEventName, lastTripEventName);
   };
 
   const getTripDuration = () => {
@@ -52,15 +35,11 @@ const createMainInfo = (tripEvents) => {
     const endDay = dayjs(getSortedEventsTo()[tripEvents.length - 1].dateTo);
     const longDateFormat = 'MMM DD';
     const shortDateFormat = 'DD';
-    return `${startDay.format(
-      longDateFormat
-    )}&nbsp;&mdash;&nbsp;${endDay.format(
-      startDay.month() === endDay.month() ? shortDateFormat : longDateFormat
-    )}`;
+    return `${startDay.format(longDateFormat)}&nbsp;&mdash;&nbsp;${endDay.format((startDay.month() === endDay.month()) ? shortDateFormat : longDateFormat)}`;
   };
 
-  return tripEvents.length > 0
-    ? `<section class="trip-main__trip-info  trip-info">
+  return tripEvents.length > 0 ?
+    `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
         <h1 class="trip-info__title">${getTripRoute()}</h1>
         <p class="trip-info__dates">${getTripDuration()}</p>
@@ -68,8 +47,8 @@ const createMainInfo = (tripEvents) => {
       <p class="trip-info__cost">
         Total: &euro;&nbsp;<span class="trip-info__cost-value">${getTotalPrice()}</span>
       </p>
-    </section>`
-    : '';
+    </section>` :
+    '';
 };
 
 export default class TripInfoView extends AbstractView {
@@ -81,7 +60,7 @@ export default class TripInfoView extends AbstractView {
   }
 
   get template() {
-    return createMainInfo(this.#tripEvents);
+    return createTripInfo(this.#tripEvents);
   }
 }
 
