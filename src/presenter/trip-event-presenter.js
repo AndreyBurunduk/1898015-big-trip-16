@@ -4,9 +4,16 @@ import {isOnlyTypeChanged} from '../utils/event.js';
 import TripEventView from '../view/page-main-trip-events-item-view.js';
 import TripEventEditorView from '../view/page-main-events-list-form-view.js';
 
+
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
+};
+
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
 };
 
 export default class TripEventPresenter {
@@ -14,13 +21,16 @@ export default class TripEventPresenter {
   #changeData = null;
   #changeMode = null;
 
+  #tripModel = null;
+
   #tripEventComponent = null;
   #tripEventEditorComponent = null;
 
   #tripEvent = null;
   #mode = Mode.DEFAULT;
 
-  constructor(tripEventsListComponent, changeData, changeMode) {
+  constructor(tripModel, tripEventsListComponent, changeData, changeMode) {
+    this.#tripModel = tripModel;
     this.#tripEventsListComponent = tripEventsListComponent;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
@@ -33,7 +43,7 @@ export default class TripEventPresenter {
     const existingTripEventEditorComponent = this.#tripEventEditorComponent;
 
     this.#tripEventComponent = new TripEventView(tripEvent);
-    this.#tripEventEditorComponent = new TripEventEditorView(tripEvent);
+    this.#tripEventEditorComponent = new TripEventEditorView(this.#tripModel.destinations, this.#tripModel.offersList, tripEvent);
 
     this.#tripEventComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#tripEventComponent.setExpandClickHandler(this.#handleExpandClick);
@@ -51,7 +61,8 @@ export default class TripEventPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#tripEventEditorComponent, existingTripEventEditorComponent);
+      replace(this.#tripEventComponent, existingTripEventEditorComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(existingTripEventComponent);
@@ -70,8 +81,40 @@ export default class TripEventPresenter {
     }
   }
 
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => this.#tripEventEditorComponent.updateData({
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
+
+    switch (state) {
+      case State.SAVING:
+        this.#tripEventEditorComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this.#tripEventEditorComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this.#tripEventComponent.shake(resetFormState);
+        this.#tripEventEditorComponent.shake(resetFormState);
+        break;
+    }
+  }
+
   #switchEventToEditor = () => {
     replace(this.#tripEventEditorComponent, this.#tripEventComponent);
+    this.#tripEventEditorComponent.setDatePickers();
     document.addEventListener('keydown', this.#escKeydownHandler);
     this.#changeMode();
     this.#mode = Mode.EDITING;
@@ -113,8 +156,6 @@ export default class TripEventPresenter {
       isPatchUpdate ? UpdateType.PATCH : UpdateType.MAJOR,
       update,
     );
-
-    this.#switchEditorToEvent();
   }
 
   #handleFormDelete = (tripEvent) => {

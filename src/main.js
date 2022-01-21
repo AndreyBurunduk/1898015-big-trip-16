@@ -1,16 +1,10 @@
-import {getTripEvent} from './mock/mock.js';
-import TripEventsModel from './model/trip-model.js';
-import FilterModel from './model/filter-model.js';
 import AppPresenter from './presenter/app-presenter.js';
+import ApiService from './api-service.js';
 
-const TRIP_EVENTS_COUNTER = 20;
+const AUTHORIZATION = 'Basic j7roE4V04vboUKXFpX';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
-const tripEvents = Array.from({length: TRIP_EVENTS_COUNTER}, getTripEvent);
+const apiService = new ApiService(END_POINT, AUTHORIZATION);
 
-const tripEventsModel = new TripEventsModel();
-tripEventsModel.tripEvents = tripEvents;
-
-const filterModel = new FilterModel();
-
-const appPresenter = new AppPresenter(tripEventsModel, filterModel);
+const appPresenter = new AppPresenter(apiService);
 appPresenter.init();
