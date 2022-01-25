@@ -1,4 +1,4 @@
-import TripFiltersView from '../view/trip-main-filters-view.js';
+import TripMainFiltersView from '../view/trip-main-filters-view.js';
 import {remove, render, replace, RenderPosition} from '../utils/render.js';
 import {FilterType, UpdateType} from '../utils/const.js';
 
@@ -37,7 +37,7 @@ export default class FilterPresenter {
     const filters = this.filters;
     const existingFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new TripFiltersView(filters, this.#filterModel.filter, this.#tripModel.tripEvents);
+    this.#filterComponent = new TripMainFiltersView(filters, this.#filterModel.filter, this.#tripModel.tripEvents);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
     this.#filterModel.addObserver(this.#handleModelEvent);

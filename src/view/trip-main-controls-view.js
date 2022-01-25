@@ -8,7 +8,7 @@ const createTripTabs = () => (
   </nav>`
 );
 
-export default class TripTabsView extends AbstractView {
+export default class TripMainControlsView extends AbstractView {
   get template() {
     return createTripTabs();
   }

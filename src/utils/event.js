@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {TripEventType} from './const.js';
+import { TripEventType, MINUT, HOURS } from './const.js';
 
 const isCitiesEqual = (cityA, cityB) => cityA === cityB;
 
@@ -43,9 +43,11 @@ export const countTripEventsTimeByType = (tripEvents, type) => {
 const addPaddingZero = (number) => number < 10 ? `0${number}` : number;
 
 export const formatChartTime = (time) => {
-  const minutesDifference = `${addPaddingZero(time % 60)}M`;
-  const hoursDifference = Math.floor(time / 60) % 24 > 0 ? `${addPaddingZero(Math.floor(time / 60) % 24)}H ` : '';
-  const daysDifference = Math.floor((time / 60) / 24) > 0 ? `${addPaddingZero(Math.floor((time / 60) / 24))}D ` : '';
+  const minutesDifference = `${addPaddingZero(time % MINUT)}M`;
+  const hoursDifference = Math.floor(time / MINUT) % HOURS > 0 ? `${addPaddingZero(Math.floor(time / MINUT) % HOURS)}H ` : '';
+  const daysDifference = Math.floor((time / MINUT) / HOURS) > 0 ? `${addPaddingZero(Math.floor((time / MINUT) / HOURS))}D ` : '';
 
   return daysDifference + hoursDifference + minutesDifference;
 };
+
+export const isEscapeEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';

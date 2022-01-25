@@ -9,7 +9,7 @@ const tripMessageTextType = {
 
 const createTripMessage = (filterType) => `<p class="trip-events__msg">${tripMessageTextType[filterType]}</p>`;
 
-export default class TripMessageView extends AbstractView {
+export default class PageMainMsgView extends AbstractView {
   constructor(filterType) {
     super();
     this._filterType = filterType;

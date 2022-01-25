@@ -123,7 +123,7 @@ const createTripEventEditor = (destinations = [], offersList = [], data = {}) =>
   </li>`;
 };
 
-export default class TripEventEditorView extends SmartView {
+export default class PageMainEventListFromView extends SmartView {
   #startDatePicker = null;
   #endDatePicker = null;
   #destinations = null;
@@ -133,7 +133,7 @@ export default class TripEventEditorView extends SmartView {
     super();
     this.#destinations = destinations;
     this.#offersList = offersList;
-    this._data = TripEventEditorView.parseTripEventToData(tripEvent);
+    this._data = PageMainEventListFromView.parseTripEventToData(tripEvent);
     this.#setInnerHandlers();
   }
 
@@ -153,7 +153,7 @@ export default class TripEventEditorView extends SmartView {
 
   #submitFormHandler = (evt) => {
     evt.preventDefault();
-    this._callback.submitForm(TripEventEditorView.parseDataToTripEvent(this._data));
+    this._callback.submitForm(PageMainEventListFromView.parseDataToTripEvent(this._data));
   }
 
   setSubmitFormHandler = (callback) => {
@@ -163,7 +163,7 @@ export default class TripEventEditorView extends SmartView {
 
   #deleteFormHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteForm(TripEventEditorView.parseDataToTripEvent(this._data));
+    this._callback.deleteForm(PageMainEventListFromView.parseDataToTripEvent(this._data));
   }
 
   setDeleteFormHandler = (callback) => {
@@ -216,7 +216,7 @@ export default class TripEventEditorView extends SmartView {
     }
   }
 
-  reset = (tripEvent) => this.updateData(TripEventEditorView.parseTripEventToData(tripEvent));
+  reset = (tripEvent) => this.updateData(PageMainEventListFromView.parseTripEventToData(tripEvent));
 
   removeElement = () => {
     this.removeDatePickers();

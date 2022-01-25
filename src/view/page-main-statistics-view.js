@@ -235,7 +235,7 @@ const createTripStatistics = () => (
   </section>`
 );
 
-export default class TripStatisticsView extends SmartView {
+export default class PageMainStatisticsView extends SmartView {
   #moneyChart = null;
   #typeChart = null;
   #timeChart = null;

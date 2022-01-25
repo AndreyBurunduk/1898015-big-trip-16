@@ -56,7 +56,7 @@ const createTripEvent = ({basePrice, dateFrom, dateTo, destination, isFavorite, 
   </li>`;
 };
 
-export default class TripEventView extends AbstractView {
+export default class PageMainTripEventsItemView extends AbstractView {
   #tripEvent = {};
 
   constructor(tripEvent = {}) {
