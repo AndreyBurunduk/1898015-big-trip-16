@@ -8,3 +8,4 @@ const apiService = new ApiService(END_POINT, AUTHORIZATION);
 
 const appPresenter = new AppPresenter(apiService);
 appPresenter.init();
+/* TripTabsView, */

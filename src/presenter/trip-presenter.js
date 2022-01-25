@@ -2,9 +2,9 @@ import {remove, render, RenderPosition} from '../utils/render.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../utils/const.js';
 import {sortTripEventsByDay, sortTripEventsByTime, sortTripEventsByPrice} from '../utils/sort.js';
 import {filter} from '../utils/filter.js';
-import TripSortView from '../view/page-main-events-sort-view.js';
-import TripEventsListView from '../view/page-main-events-list-view.js';
-import TripMessageView from '../view/page-main-msg-view';
+import PageMainEventsSortView from '../view/page-main-events-sort-view.js';
+import PageMainEventsListView from '../view/page-main-events-list-view.js';
+import PageMainMsgView from '../view/page-main-msg-view';
 import TripLoadingView from '../view/trip-loading-view.js';
 import TripEventPresenter, { State } from './trip-event-presenter.js';
 import NewTripEventPresenter from './new-trip-event-presenter.js';
@@ -20,7 +20,7 @@ export default class TripPresenter {
   #tripSortComponent = null;
   #tripMessageComponent = null;
   #tripLoadingComponent = new TripLoadingView();
-  #tripEventsListComponent = new TripEventsListView();
+  #tripEventsListComponent = new PageMainEventsListView();
 
   #tripEventPresenter = new Map();
   #newTripEventPresenter = null;
@@ -97,7 +97,7 @@ export default class TripPresenter {
   };
 
   #renderTripSort = () => {
-    this.#tripSortComponent = new TripSortView(this.#currentSortType);
+    this.#tripSortComponent = new PageMainEventsSortView(this.#currentSortType);
     this.#tripSortComponent.setSortTypeChangeHandler(
       this.#handleSortTypeChange
     );
@@ -194,7 +194,7 @@ export default class TripPresenter {
     );
 
   #renderTripMessage = () => {
-    this.#tripMessageComponent = new TripMessageView(this.#filterType);
+    this.#tripMessageComponent = new PageMainMsgView(this.#filterType);
     render(
       this.#tripEventsContainer,
       this.#tripMessageComponent,

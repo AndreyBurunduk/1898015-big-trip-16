@@ -1,8 +1,8 @@
 import {render, replace, remove, RenderPosition} from '../utils/render.js';
 import {UpdateType, UserAction} from '../utils/const.js';
-import {isOnlyTypeChanged} from '../utils/event.js';
-import TripEventView from '../view/page-main-trip-events-item-view.js';
-import TripEventEditorView from '../view/page-main-events-list-form-view.js';
+import { isOnlyTypeChanged, isEscapeEvent } from '../utils/event.js';
+import PageMainTripEventsItemView from '../view/page-main-trip-events-item-view.js';
+import PageMainEventListFromView from '../view/page-main-events-list-form-view.js';
 
 
 const Mode = {
@@ -42,8 +42,8 @@ export default class TripEventPresenter {
     const existingTripEventComponent = this.#tripEventComponent;
     const existingTripEventEditorComponent = this.#tripEventEditorComponent;
 
-    this.#tripEventComponent = new TripEventView(tripEvent);
-    this.#tripEventEditorComponent = new TripEventEditorView(this.#tripModel.destinations, this.#tripModel.offersList, tripEvent);
+    this.#tripEventComponent = new PageMainTripEventsItemView(tripEvent);
+    this.#tripEventEditorComponent = new PageMainEventListFromView(this.#tripModel.destinations, this.#tripModel.offersList, tripEvent);
 
     this.#tripEventComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#tripEventComponent.setExpandClickHandler(this.#handleExpandClick);
@@ -127,7 +127,7 @@ export default class TripEventPresenter {
   }
 
   #escKeydownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscapeEvent(evt)) {
       evt.preventDefault();
       this.#tripEventEditorComponent.reset(this.#tripEvent);
       this.#switchEditorToEvent();

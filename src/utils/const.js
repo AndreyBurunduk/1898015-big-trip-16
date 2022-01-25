@@ -40,3 +40,6 @@ export const MenuItem = {
   TABLE: 'TABLE',
   STATS: 'STATS',
 };
+
+export const MINUT = 60;
+export const HOURS = 24;

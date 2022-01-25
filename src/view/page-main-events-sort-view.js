@@ -26,7 +26,7 @@ const createTripSort = (currentSortType) => (
   </form>`
 );
 
-export default class TripSortView extends AbstractView {
+export default class PageMainEventsSortView extends AbstractView {
   #currentSortType = null;
 
   constructor(currentSortType) {

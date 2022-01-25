@@ -1,4 +1,4 @@
-import TripInfoView from '../view/trip-main-info-view.js';
+import TripMainInfoView from '../view/trip-main-info-view.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
 
 export default class TripInfoPresenter {
@@ -12,7 +12,7 @@ export default class TripInfoPresenter {
   }
 
   init = () => {
-    this.#tripInfoComponent = new TripInfoView(this.#tripModel.tripEvents);
+    this.#tripInfoComponent = new TripMainInfoView(this.#tripModel.tripEvents);
     render(this.#tripMainContainer, this.#tripInfoComponent, RenderPosition.AFTERBEGIN);
   };
 
